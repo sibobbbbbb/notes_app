@@ -1,5 +1,9 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:notes_app/components/home/body_home.dart';
+import '../components/home/title_appbar_home.dart';
+import '../components/home/actions_appbar_home.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -7,17 +11,15 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.brown.shade400,
-        title: const Text(
-          'Your Notes',
-          style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold
-          ),
-        ),
-        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: titleAppbarHome(),
+        actions: actionsAppbarHome(),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
+      body: bodyHome(),
     );
   }
 }
