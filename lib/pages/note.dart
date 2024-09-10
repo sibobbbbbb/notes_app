@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../database/note_object.dart';
 
 class NotePage extends StatefulWidget {
-  const NotePage({super.key});
+  final Note note;
+  const NotePage({super.key, required this.note});
 
   @override
   State<NotePage> createState() => _NotePage();
@@ -14,6 +16,12 @@ class _NotePage extends State<NotePage> {
   bool _isItalic = false;
   double _fontSize = 16.0;
 
+  @override
+  void initState() {
+    super.initState();
+    _controller1.text = widget.note.title;
+    _controller2.text = widget.note.content;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,8 +112,7 @@ class _NotePage extends State<NotePage> {
                         border: InputBorder.none,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    // Display selected image
+                    const SizedBox(height: 20)
                   ],
                 ),
               ),

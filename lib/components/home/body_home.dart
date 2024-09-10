@@ -23,10 +23,7 @@ Widget bodyHome() {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const NotePage(
-                          // title: notes[index]['title']!,
-                          // description: notes[index]['description']!,
-                          )));
+                      builder: (context) => NotePage(note: notes[index])));
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
