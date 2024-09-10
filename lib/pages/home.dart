@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:notes_app/components/home/body_home.dart';
 import '../components/home/title_appbar_home.dart';
 import '../components/home/actions_appbar_home.dart';
