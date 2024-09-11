@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import '../database/note_object.dart';
 
 class NotePage extends StatefulWidget {
   final Note note;
+
   const NotePage({super.key, required this.note});
 
   @override
@@ -25,14 +27,24 @@ class _NotePage extends State<NotePage> {
   }
 
   Future<bool> _onWillPop() async {
-    if (_controller1.text != widget.note.title || _controller2.text != widget.note.content) {
+    if (_controller1.text.isEmpty && _controller2.text.isEmpty) {
+      await widget.note.delete();
+      return true;
+    }
+
+    if (_controller1.text != widget.note.title ||
+        _controller2.text != widget.note.content) {
+      var isNew = widget.note.title.isEmpty && widget.note.content.isEmpty;
       widget.note.title = _controller1.text;
       widget.note.content = _controller2.text;
       widget.note.lastUpdate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-      await widget.note.save();
+      if (isNew) {
+        await Hive.box('Notes').add(widget.note);
+      } else {
+        await widget.note.save();
+      }
     }
-
     return true;
   }
 
@@ -96,7 +108,9 @@ class _NotePage extends State<NotePage> {
                         controller: _controller1,
                         maxLength: 30,
                         buildCounter: (BuildContext context,
-                            {int? currentLength, bool? isFocused, int? maxLength}) {
+                            {int? currentLength,
+                            bool? isFocused,
+                            int? maxLength}) {
                           return null;
                         },
                         decoration: const InputDecoration(
@@ -105,8 +119,10 @@ class _NotePage extends State<NotePage> {
                         ),
                         style: TextStyle(
                           fontSize: _fontSize,
-                          fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
-                          fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
+                          fontWeight:
+                              _isBold ? FontWeight.bold : FontWeight.normal,
+                          fontStyle:
+                              _isItalic ? FontStyle.italic : FontStyle.normal,
                         ),
                       ),
                       const Divider(),
@@ -115,8 +131,10 @@ class _NotePage extends State<NotePage> {
                         maxLines: null,
                         style: TextStyle(
                           fontSize: _fontSize,
-                          fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
-                          fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
+                          fontWeight:
+                              _isBold ? FontWeight.bold : FontWeight.normal,
+                          fontStyle:
+                              _isItalic ? FontStyle.italic : FontStyle.normal,
                         ),
                         decoration: const InputDecoration(
                           hintText: "Start typing your note...",

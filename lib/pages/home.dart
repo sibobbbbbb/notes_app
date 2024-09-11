@@ -62,6 +62,22 @@ class _HomeState extends State<Home> {
           actions: actionsAppbarHome(),
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push(context, MaterialPageRoute(
+                builder: (context) => NotePage(note: Note(
+                  title: '',
+                  content: '',
+                  lastUpdate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                ))
+              ));
+              setState(() {
+                notes = Hive.box('notes').values.toList();
+              });
+            },
+            backgroundColor: Colors.grey[200],
+            child: const Icon(Icons.add),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: MasonryGridView.count(
@@ -84,7 +100,10 @@ class _HomeState extends State<Home> {
                                 NotePage(note: notes[index])));
 
                     setState(() {
-                      notes = Hive.box('notes').values.toList();
+                      notes = Hive
+                          .box('notes')
+                          .values
+                          .toList();
                     });
                   },
                   child: Padding(
