@@ -18,6 +18,14 @@ class _HomeState extends State<Home> {
   late Box noteBox;
   List<dynamic> notes = [];
   bool isGridView = true;
+  static const List<String> color = [
+    "FD99FF",
+    "FF9E9E",
+    "91F48F",
+    "FFF599",
+    "9EFFFF",
+    "B69CFF"
+  ];
 
   Widget gridView(List<dynamic> notes) {
     return MasonryGridView.count(
@@ -27,7 +35,7 @@ class _HomeState extends State<Home> {
       itemCount: notes.length,
       itemBuilder: (context, index) {
         return Card(
-          color: Colors.grey[200],
+          color: Color(int.parse('0xFF${color[index % color.length]}')),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -36,14 +44,10 @@ class _HomeState extends State<Home> {
               await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          NotePage(note: notes[index])));
+                      builder: (context) => NotePage(note: notes[index])));
 
               setState(() {
-                notes = Hive
-                    .box('notes')
-                    .values
-                    .toList();
+                notes = Hive.box('notes').values.toList();
               });
             },
             child: Padding(
@@ -96,20 +100,16 @@ class _HomeState extends State<Home> {
         itemCount: notes.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
-            color: Colors.grey[200],
+            color: Color(int.parse('0xFF${color[index % color.length]}')),
             child: InkWell(
                 onTap: () async {
                   await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              NotePage(note: notes[index])));
+                          builder: (context) => NotePage(note: notes[index])));
 
                   setState(() {
-                    notes = Hive
-                        .box('notes')
-                        .values
-                        .toList();
+                    notes = Hive.box('notes').values.toList();
                   });
                 },
                 child: Padding(
@@ -149,12 +149,9 @@ class _HomeState extends State<Home> {
                         const SizedBox(height: 8),
                         Text(notes[index].content!),
                       ],
-                    )
-                )
-            ),
+                    ))),
           );
-        }
-    );
+        });
   }
 
   @override
@@ -192,20 +189,18 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF252525),
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFF252525),
           title: titleAppbarHome(),
           actions: <Widget>[
             Container(
               padding: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey[200],
-              ),
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Color(0xFF3B3B3B)),
               child: IconButton(
-                color: Colors.black,
+                color: Colors.white,
                 icon: const Icon(Icons.search),
                 onPressed: () {
                   // print('Search');
@@ -215,12 +210,12 @@ class _HomeState extends State<Home> {
             const SizedBox(width: 15),
             Container(
               padding: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.grey[200],
+                color: Color(0xFF3B3B3B),
               ),
               child: IconButton(
-                color: Colors.black,
+                color: Colors.white,
                 icon: isGridView
                     ? const Icon(Icons.grid_view)
                     : const Icon(Icons.list),
@@ -240,23 +235,19 @@ class _HomeState extends State<Home> {
             await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        NotePage(
+                    builder: (context) => NotePage(
                             note: Note(
-                              title: '',
-                              content: '',
-                              lastUpdate:
+                          title: '',
+                          content: '',
+                          lastUpdate:
                               DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                            ))));
+                        ))));
             setState(() {
-              notes = Hive
-                  .box('notes')
-                  .values
-                  .toList();
+              notes = Hive.box('notes').values.toList();
             });
           },
-          backgroundColor: Colors.grey[200],
-          child: const Icon(Icons.add),
+          backgroundColor: const Color(0xFF3B3B3B),
+          child: const Icon(color: Colors.white, Icons.add),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
