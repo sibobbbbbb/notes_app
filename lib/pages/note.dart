@@ -55,8 +55,12 @@ class _NotePage extends State<NotePage> {
         await _onWillPop();
       },
       child: Scaffold(
+        backgroundColor: const Color(0xFF252525),
         appBar: AppBar(
-          title: const Text("Create Note"),
+          title: const Text("Create Note", style: TextStyle(fontSize: 20)),
+          backgroundColor: const Color(0xFF252525),
+          iconTheme: const IconThemeData(color: Colors.white),
+          titleTextStyle: const TextStyle(color: Colors.white),
         ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -72,7 +76,7 @@ class _NotePage extends State<NotePage> {
                         _isBold = !_isBold;
                       });
                     },
-                    color: _isBold ? Colors.blue : Colors.black,
+                    color: _isBold ? Colors.blue : Colors.white,
                   ),
                   IconButton(
                     icon: const Icon(Icons.format_italic),
@@ -81,14 +85,18 @@ class _NotePage extends State<NotePage> {
                         _isItalic = !_isItalic;
                       });
                     },
-                    color: _isItalic ? Colors.blue : Colors.black,
+                    color: _isItalic ? Colors.blue : Colors.white,
                   ),
                   DropdownButton<double>(
+                    dropdownColor: const Color(0xFF252525),
                     value: _fontSize,
                     items: [16, 18, 20, 24].map((size) {
                       return DropdownMenuItem<double>(
                         value: size.toDouble(),
-                        child: Text(size.toString()),
+                        child: Text(
+                          size.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       );
                     }).toList(),
                     onChanged: (double? newSize) {
@@ -103,42 +111,42 @@ class _NotePage extends State<NotePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // Title and description text fields
+                      // Title dan description text fields
                       TextField(
                         controller: _controller1,
                         maxLength: 30,
                         buildCounter: (BuildContext context,
                             {int? currentLength,
-                            bool? isFocused,
-                            int? maxLength}) {
+                              bool? isFocused,
+                              int? maxLength}) {
                           return null;
                         },
                         decoration: const InputDecoration(
                           hintText: "Title",
                           border: InputBorder.none,
+                          hintStyle: TextStyle(color: Colors.white60),
                         ),
                         style: TextStyle(
                           fontSize: _fontSize,
-                          fontWeight:
-                              _isBold ? FontWeight.bold : FontWeight.normal,
-                          fontStyle:
-                              _isItalic ? FontStyle.italic : FontStyle.normal,
+                          fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
+                          fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
+                          color: Colors.white,
                         ),
                       ),
-                      const Divider(),
+                      const Divider(color: Colors.white60),
                       TextField(
                         controller: _controller2,
                         maxLines: null,
                         style: TextStyle(
                           fontSize: _fontSize,
-                          fontWeight:
-                              _isBold ? FontWeight.bold : FontWeight.normal,
-                          fontStyle:
-                              _isItalic ? FontStyle.italic : FontStyle.normal,
+                          fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
+                          fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal,
+                          color: Colors.white,
                         ),
                         decoration: const InputDecoration(
                           hintText: "Start typing your note...",
                           border: InputBorder.none,
+                          hintStyle: TextStyle(color: Colors.white60),
                         ),
                       ),
                       const SizedBox(height: 20),
