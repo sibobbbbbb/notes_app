@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
-import '../components/home/title_appbar_home.dart';
 import 'package:hive/hive.dart';
 import '../../pages/note.dart';
 import '../database/note_object.dart';
@@ -193,7 +192,51 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: const Color(0xFF252525),
-          title: titleAppbarHome(),
+          title: Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 23,
+                        backgroundImage: AssetImage('assets/images/SiBoB.png'),
+                      ),
+                      const SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Farhan Raditya',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${notes.length} Notes',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 25),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           actions: <Widget>[
             Container(
               padding: const EdgeInsets.all(1),
