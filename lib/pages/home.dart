@@ -33,6 +33,7 @@ class _HomeState extends State<Home> {
     super.initState();
     noteBox = Hive.box('notes');
     notes = noteBox.values.toList();
+    notes.sort((a, b) => b.lastUpdate.compareTo(a.lastUpdate));
   }
 
   @override
@@ -68,7 +69,8 @@ class _HomeState extends State<Home> {
                         radius: 23,
                         backgroundImage: AssetImage('assets/images/SiBoB.png'),
                       ),
-                      if (!isSearching && !isAnimating) const SizedBox(width: 15),
+                      if (!isSearching && !isAnimating)
+                        const SizedBox(width: 15),
                       if (!isSearching && !isAnimating)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,11 +93,15 @@ class _HomeState extends State<Home> {
                             ),
                           ],
                         ),
-                      if (!isSearching && !isAnimating) const SizedBox(width: 25),
+                      if (!isSearching && !isAnimating)
+                        const SizedBox(width: 25),
                     ],
                   ),
                 ),
-                if (!isSearching) const SizedBox(width: 37) else const SizedBox(width: 13),
+                if (!isSearching)
+                  const SizedBox(width: 37)
+                else
+                  const SizedBox(width: 13),
                 if (!isSearching)
                   Container(
                     padding: const EdgeInsets.all(1),
@@ -147,7 +153,6 @@ class _HomeState extends State<Home> {
                       },
                     ),
                   ),
-
                 if (isSearching)
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.white),
@@ -219,9 +224,64 @@ class _HomeState extends State<Home> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: isGridView
-              ? gridView(notes, stateFunc)
-              : listView(notes, stateFunc),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: DropdownButton(
+                    icon: const Icon(Icons.sort),
+                    alignment: Alignment.center,
+
+                    borderRadius: BorderRadius.circular(30),
+                    hint: const Text('Sort by',
+                        style: TextStyle(color: Colors.white)),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'A-Z',
+                        child: Text('Sort by A-Z'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Z-A',
+                        child: Text('Sort by Z-A'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'newest',
+                        child: Text('Sort by Newest'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'oldest',
+                        child: Text('Sort by Oldest'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        switch (value) {
+                          case 'A-Z':
+                            notes.sort((a, b) => a.title.compareTo(b.title));
+                            break;
+                          case 'Z-A':
+                            notes.sort((a, b) => b.title.compareTo(a.title));
+                            break;
+                          case 'newest':
+                            notes.sort(
+                                (a, b) => b.lastUpdate.compareTo(a.lastUpdate));
+                            break;
+                          case 'oldest':
+                            notes.sort(
+                                (a, b) => a.lastUpdate.compareTo(b.lastUpdate));
+                            break;
+                        }
+                      });
+                    }),
+              ),
+              const SizedBox(height: 15),
+              Expanded(
+                  child: isGridView
+                      ? gridView(notes, stateFunc)
+                      : listView(notes, stateFunc)),
+            ],
+          ),
         ));
   }
 }
