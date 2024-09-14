@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -6,9 +7,12 @@ import '../../pages/note.dart';
 import '../components/grid_view.dart';
 import '../components/list_view.dart';
 import '../database/note_object.dart';
+import 'profile.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final User? user;
+  final FirebaseAuth auth;
+  const Home({super.key, required this.user ,required this.auth});
 
   @override
   State<Home> createState() => _HomeState();
@@ -49,6 +53,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
         backgroundColor: const Color(0xFF252525),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0,
           backgroundColor: const Color(0xFF252525),
           title: Padding(
@@ -62,40 +67,55 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   duration: const Duration(milliseconds: 300),
-                  width: isSearching ? 52 : 213,
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 23,
-                        backgroundImage: AssetImage('assets/images/SiBoB.png'),
-                      ),
-                      if (!isSearching && !isAnimating)
-                        const SizedBox(width: 15),
-                      if (!isSearching && !isAnimating)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Farhan Raditya',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '${notes.length} Notes',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                  width: isSearching ? 46 : 213,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Profile(user: widget.user,auth: widget.auth,)),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: NetworkImage(widget.user!.photoURL!),
+                                fit: BoxFit.cover),
+                          ),
                         ),
-                      if (!isSearching && !isAnimating)
-                        const SizedBox(width: 25),
-                    ],
+                        if (!isSearching && !isAnimating)
+                          const SizedBox(width: 15),
+                        if (!isSearching && !isAnimating)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Farhan Raditya',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '${notes.length} Notes',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (!isSearching && !isAnimating)
+                          const SizedBox(width: 25),
+                      ],
+                    ),
                   ),
                 ),
                 if (!isSearching)
@@ -228,7 +248,7 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 10,top: 5),
+                padding: const EdgeInsets.only(left: 10, top: 5),
                 // Sorting Options
                 child: Container(
                   padding: const EdgeInsets.only(left: 10, right: 10),
@@ -239,7 +259,6 @@ class _HomeState extends State<Home> {
                   child: DropdownButton(
                       icon: const Icon(Icons.sort),
                       alignment: Alignment.center,
-
                       borderRadius: BorderRadius.circular(30),
                       hint: const Text('Sort by',
                           style: TextStyle(color: Colors.white)),
@@ -271,12 +290,12 @@ class _HomeState extends State<Home> {
                               notes.sort((a, b) => b.title.compareTo(a.title));
                               break;
                             case 'newest':
-                              notes.sort(
-                                  (a, b) => b.lastUpdate.compareTo(a.lastUpdate));
+                              notes.sort((a, b) =>
+                                  b.lastUpdate.compareTo(a.lastUpdate));
                               break;
                             case 'oldest':
-                              notes.sort(
-                                  (a, b) => a.lastUpdate.compareTo(b.lastUpdate));
+                              notes.sort((a, b) =>
+                                  a.lastUpdate.compareTo(b.lastUpdate));
                               break;
                           }
                         });

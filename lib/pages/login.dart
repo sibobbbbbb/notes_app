@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:notes_app/pages/home.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class Login extends StatefulWidget {
@@ -17,10 +18,16 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    _auth.authStateChanges().listen((User? user) {
-      setState(() {
-        _user = user;
-      });
+    _auth.authStateChanges().listen((User? userLogin) {
+      if (userLogin != null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Home(user: userLogin,auth: _auth,),
+          ),
+          (Route<dynamic> route) => false,
+        );
+      }
     });
   }
 
@@ -93,7 +100,7 @@ class _LoginState extends State<Login> {
                     fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              if (_user != null) displayUser() else _signInButton(),
+              _signInButton(),
             ],
           ),
         ),
