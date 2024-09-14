@@ -228,54 +228,63 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: DropdownButton(
-                    icon: const Icon(Icons.sort),
-                    alignment: Alignment.center,
-
+                padding: const EdgeInsets.only(left: 10,top: 5),
+                // Sorting Options
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3B3B3B),
                     borderRadius: BorderRadius.circular(30),
-                    hint: const Text('Sort by',
-                        style: TextStyle(color: Colors.white)),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'A-Z',
-                        child: Text('Sort by A-Z'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Z-A',
-                        child: Text('Sort by Z-A'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'newest',
-                        child: Text('Sort by Newest'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'oldest',
-                        child: Text('Sort by Oldest'),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        switch (value) {
-                          case 'A-Z':
-                            notes.sort((a, b) => a.title.compareTo(b.title));
-                            break;
-                          case 'Z-A':
-                            notes.sort((a, b) => b.title.compareTo(a.title));
-                            break;
-                          case 'newest':
-                            notes.sort(
-                                (a, b) => b.lastUpdate.compareTo(a.lastUpdate));
-                            break;
-                          case 'oldest':
-                            notes.sort(
-                                (a, b) => a.lastUpdate.compareTo(b.lastUpdate));
-                            break;
-                        }
-                      });
-                    }),
+                  ),
+                  child: DropdownButton(
+                      icon: const Icon(Icons.sort),
+                      alignment: Alignment.center,
+
+                      borderRadius: BorderRadius.circular(30),
+                      hint: const Text('Sort by',
+                          style: TextStyle(color: Colors.white)),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'A-Z',
+                          child: Text('Sort by A-Z'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Z-A',
+                          child: Text('Sort by Z-A'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'newest',
+                          child: Text('Sort by Newest'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'oldest',
+                          child: Text('Sort by Oldest'),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          switch (value) {
+                            case 'A-Z':
+                              notes.sort((a, b) => a.title.compareTo(b.title));
+                              break;
+                            case 'Z-A':
+                              notes.sort((a, b) => b.title.compareTo(a.title));
+                              break;
+                            case 'newest':
+                              notes.sort(
+                                  (a, b) => b.lastUpdate.compareTo(a.lastUpdate));
+                              break;
+                            case 'oldest':
+                              notes.sort(
+                                  (a, b) => a.lastUpdate.compareTo(b.lastUpdate));
+                              break;
+                          }
+                        });
+                      }),
+                ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
+              // Display Notes
               Expanded(
                   child: isGridView
                       ? gridView(notes, stateFunc)
