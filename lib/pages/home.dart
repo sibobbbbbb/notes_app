@@ -12,7 +12,8 @@ import 'profile.dart';
 class Home extends StatefulWidget {
   final User? user;
   final FirebaseAuth auth;
-  const Home({super.key, required this.user ,required this.auth});
+
+  const Home({super.key, required this.user, required this.auth});
 
   @override
   State<Home> createState() => _HomeState();
@@ -28,15 +29,15 @@ class _HomeState extends State<Home> {
 
   void stateFunc() {
     setState(() {
-      notes = Hive.box('notes').values.toList();
+      notes = getUserNotes(widget.user)!;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    noteBox = Hive.box('notes');
-    notes = noteBox.values.toList();
+    noteBox = Hive.box("${widget.user?.email}");
+    notes = getUserNotes(widget.user)!;
     notes.sort((a, b) => b.lastUpdate.compareTo(a.lastUpdate));
   }
 
@@ -44,7 +45,7 @@ class _HomeState extends State<Home> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     setState(() {
-      notes = noteBox.values.toList();
+      notes = getUserNotes(widget.user)!;
     });
   }
 
@@ -73,7 +74,10 @@ class _HomeState extends State<Home> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => Profile(user: widget.user,auth: widget.auth,)),
+                            builder: (context) => Profile(
+                                  user: widget.user,
+                                  auth: widget.auth,
+                                )),
                       );
                     },
                     child: Row(
@@ -94,9 +98,9 @@ class _HomeState extends State<Home> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Farhan Raditya',
-                                style: TextStyle(
+                              Text(
+                                '${widget.user?.email?.split('@')[0]}',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -158,7 +162,7 @@ class _HomeState extends State<Home> {
                       style: const TextStyle(color: Colors.black),
                       onChanged: (value) {
                         setState(() {
-                          notes = noteBox.values
+                          notes = getUserNotes(widget.user)!
                               .where((note) =>
                                   note.title
                                       .toString()
@@ -229,14 +233,15 @@ class _HomeState extends State<Home> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => NotePage(
-                            note: Note(
-                          title: '',
-                          content: '',
-                          lastUpdate:
-                              DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                        ))));
+                          note: Note(
+                              title: '',
+                              content: '',
+                              lastUpdate: DateFormat('yyyy-MM-dd')
+                                  .format(DateTime.now())),
+                          user: widget.user,
+                        )));
             setState(() {
-              notes = Hive.box('notes').values.toList();
+              notes = getUserNotes(widget.user)!;
             });
           },
           backgroundColor: const Color(0xFF3B3B3B),
@@ -306,8 +311,8 @@ class _HomeState extends State<Home> {
               // Display Notes
               Expanded(
                   child: isGridView
-                      ? gridView(notes, stateFunc)
-                      : listView(notes, stateFunc)),
+                      ? gridView(widget.user,notes, stateFunc)
+                      : listView(widget.user,notes, stateFunc)),
             ],
           ),
         ));

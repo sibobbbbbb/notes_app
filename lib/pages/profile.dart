@@ -1,10 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hive/hive.dart';
+import 'login.dart';
+
+final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class Profile extends StatefulWidget {
   final User? user;
   final FirebaseAuth auth;
-  const Profile({super.key, required this.user,required this.auth});
+
+  const Profile({super.key, required this.user, required this.auth});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -88,14 +94,16 @@ class _ProfileState extends State<Profile> {
             ),
             Row(
               children: [
-                const Icon(Icons.email,color: Colors.white,),
+                const Icon(
+                  Icons.email,
+                  color: Colors.white,
+                ),
                 const SizedBox(
                   width: 10,
                 ),
                 Text(
                   '${widget.user?.email}',
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 15),
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
                 ),
               ],
             ),
@@ -103,13 +111,25 @@ class _ProfileState extends State<Profile> {
               padding: const EdgeInsets.only(top: 40),
               child: Center(
                   child: MaterialButton(
-                    height: 50,
-                    minWidth: 150,
-                    color: Colors.red,
-                    onPressed: widget.auth.signOut,
-                    child: const Text("Sign Out"),
-                  )
-              ),
+                hoverColor: Colors.red[700],
+                height: 50,
+                minWidth: 150,
+                color: Colors.red,
+                onPressed: () async {
+                  await googleSignIn.disconnect();
+                  await googleSignIn.signOut();
+                  await widget.auth.signOut();
+
+                  Hive.close();
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Login()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: const Text("Sign Out"),
+              )),
             )
           ],
         ),

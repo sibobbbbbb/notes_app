@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../pages/note.dart';
 import '../utils/get_last_update.dart';
 import 'notes_color.dart';
 
-Widget gridView(List<dynamic> notes, Function setState) {
+Widget gridView(User? user,List<dynamic> notes, Function setState) {
   return MasonryGridView.count(
     crossAxisCount: 2,
     mainAxisSpacing: 4,
@@ -21,7 +22,7 @@ Widget gridView(List<dynamic> notes, Function setState) {
             await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => NotePage(note: notes[index])));
+                    builder: (context) => NotePage(note: notes[index], user: user,)));
 
             setState();
           },

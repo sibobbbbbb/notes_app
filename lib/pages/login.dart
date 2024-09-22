@@ -1,8 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hive/hive.dart';
 import 'package:notes_app/pages/home.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import '../database/note_object.dart';
+
+final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,20 +18,26 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? _user;
 
   @override
   void initState() {
     super.initState();
-    _auth.authStateChanges().listen((User? userLogin) {
+    _auth.authStateChanges().listen((User? userLogin) async {
       if (userLogin != null) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Home(user: userLogin,auth: _auth,),
-          ),
-          (Route<dynamic> route) => false,
-        );
+        Box? box = await openUserBox(userLogin);
+        if(box != null)
+          {
+            Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Home(
+                user: userLogin,
+                auth: _auth,
+              ),
+            ),
+            (Route<dynamic> route) => false,
+          );
+        }
       }
     });
   }
@@ -42,44 +53,23 @@ class _LoginState extends State<Login> {
         ));
   }
 
-  void _handleGoogleSignIn() {
-    try {
-      GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
-      _auth.signInWithProvider(googleAuthProvider);
+  Future<void> _handleGoogleSignIn() async {
+    try{
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        return;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await _auth.signInWithCredential(credential);
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
     }
-  }
-
-  Widget displayUser() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            height: 100,
-            width: 100,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(_user!.photoURL!),
-              ),
-            ),
-          ),
-          Text(_user!.email!),
-          Text(_user!.displayName ?? ""),
-          MaterialButton(
-            color: Colors.red,
-            onPressed: _auth.signOut,
-            child: const Text("Sign Out"),
-          )
-        ],
-      ),
-    );
   }
 
   @override

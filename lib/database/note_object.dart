@@ -1,5 +1,6 @@
-import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
+
 part 'note_object.g.dart';
 
 @HiveType(typeId: 0)
@@ -18,45 +19,49 @@ class Note extends HiveObject {
   });
 }
 
-String getFormattedDate(int daysAgo) {
-  final now = DateTime.now();
-  final date = now.subtract(Duration(days: daysAgo));
-  if (daysAgo == 0) return 'Today';
-  if (daysAgo == 1) return 'Yesterday';
-  return DateFormat('yyyy-MM-dd').format(date);
+Future<Box?> openUserBox(User? user) async {
+  String? email = user?.email;
+  if (email != null) {
+    Box userBox = await Hive.openBox(email);
+    if (userBox.isEmpty) {
+      Map<String, dynamic> userData = {
+        "displayName": user?.displayName,
+        "email": user?.email,
+        "photoURL": user?.photoURL,
+      };
+      List<Note> notes = [];
+      await userBox.put("userData", userData);
+      await userBox.put("notes", notes);
+    }
+    return userBox;
+  }
+  return null;
 }
 
-void tempDataNote(Box box) async {
-  final List<Note> notes = [
-    Note(
-      title: 'Game Design Document',
-      content: 'Game document for "Rocket Game" including mechanics, etc.',
-      lastUpdate: getFormattedDate(0),
-    ),
-    Note(
-      title: 'Resource 3D Asset for Exploration',
-      content: 'This is a link for free asset 3D Design.',
-      lastUpdate: getFormattedDate(1),
-    ),
-    Note(
-      title: 'To do List Friday',
-      content: 'My list activities for this Friday: Work, Design Exploration, Playing PlayStation 1.',
-      lastUpdate: getFormattedDate(2),
-    ),
-    Note(
-      title: 'My First Animation 3D Object',
-      content: 'This is my first 3D animation. It is about animation and designing the 3D effect.',
-      lastUpdate: getFormattedDate(3),
-    ),
-    Note(
-      title: 'My Security Key of Wallet Crypto',
-      content: 'This is the security key of my wallet crypto.',
-      lastUpdate: getFormattedDate(4),
-    ),
-  ];
+void addNoteToBox(User? user, Note note) async {
+  print("masuk sini");
+  List? notes = getUserNotes(user);
 
-  for (var note in notes) {
-    box.add(note);
+  notes ??= [];
+
+  notes.add(note);
+  String? email = user?.email;
+
+  if (email != null) {
+    print("nge add");
+    Box userBox = Hive.box(email);
+    await userBox.put('notes', notes);
   }
 }
 
+List<dynamic>? getUserNotes(User? user) {
+  String? email = user?.email;
+  Box? userBox = email != null ? Hive.box(email) : null;
+
+  if (userBox == null || userBox.get("notes") == null) {
+    return [];
+  }
+
+  List<dynamic> notes = userBox.get("notes");
+  return notes;
+}

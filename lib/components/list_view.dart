@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../pages/note.dart';
 import '../utils/get_last_update.dart';
 import 'notes_color.dart';
 
-Widget listView(List<dynamic> notes, Function setState) {
+Widget listView(User? user,List<dynamic> notes, Function setState) {
   return ListView.builder(
       itemCount: notes.length,
       itemBuilder: (BuildContext context, int index) {
@@ -14,7 +15,7 @@ Widget listView(List<dynamic> notes, Function setState) {
                 await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NotePage(note: notes[index])));
+                        builder: (context) => NotePage(note: notes[index], user: user,)));
 
                 setState();
               },

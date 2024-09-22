@@ -10,8 +10,6 @@ Future<void> main() async {
   // Initialize Hive
   await Hive.initFlutter();
   Hive.registerAdapter(NoteAdapter());
-  await Hive.openBox("Notes");
-
   // Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

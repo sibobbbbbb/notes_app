@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import '../database/note_object.dart';
 
 class NotePage extends StatefulWidget {
   final Note note;
+  final User? user;
 
-  const NotePage({super.key, required this.note});
+  const NotePage({super.key, required this.note, required this.user});
 
   @override
   State<NotePage> createState() => _NotePage();
@@ -40,7 +41,7 @@ class _NotePage extends State<NotePage> {
       widget.note.lastUpdate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
       if (isNew) {
-        await Hive.box('Notes').add(widget.note);
+        addNoteToBox(widget.user,widget.note);
       } else {
         await widget.note.save();
       }
