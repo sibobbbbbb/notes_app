@@ -116,7 +116,7 @@ class _ProfileState extends State<Profile> {
                 minWidth: 150,
                 color: Colors.red,
                 onPressed: () async {
-                  await googleSignIn.disconnect();
+                  // await googleSignIn.disconnect();
                   await googleSignIn.signOut();
                   await widget.auth.signOut();
 
