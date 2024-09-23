@@ -49,6 +49,34 @@ class _NotePage extends State<NotePage> {
     return true;
   }
 
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Delete Note"),
+          content: const Text("Are you sure you want to delete this note?"),
+          actions: [
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: const Text("Delete"),
+              onPressed: () async {
+                deleteNoteFromBox(widget.user, widget.note);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -62,6 +90,14 @@ class _NotePage extends State<NotePage> {
           backgroundColor: const Color(0xFF252525),
           iconTheme: const IconThemeData(color: Colors.white),
           titleTextStyle: const TextStyle(color: Colors.white),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                _showDeleteConfirmationDialog(context);
+              },
+            ),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(12.0),

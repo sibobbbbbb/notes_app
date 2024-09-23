@@ -39,7 +39,6 @@ Future<Box?> openUserBox(User? user) async {
 }
 
 void addNoteToBox(User? user, Note note) async {
-  print("masuk sini");
   List? notes = getUserNotes(user);
 
   notes ??= [];
@@ -48,7 +47,6 @@ void addNoteToBox(User? user, Note note) async {
   String? email = user?.email;
 
   if (email != null) {
-    print("nge add");
     Box userBox = Hive.box(email);
     await userBox.put('notes', notes);
   }
@@ -64,4 +62,16 @@ List<dynamic>? getUserNotes(User? user) {
 
   List<dynamic> notes = userBox.get("notes");
   return notes;
+}
+
+void deleteNoteFromBox(User? user, Note note) async {
+  List? notes = getUserNotes(user);
+
+  notes?.remove(note);
+  String? email = user?.email;
+
+  if (email != null) {
+    Box userBox = Hive.box(email);
+    await userBox.put('notes', notes);
+  }
 }
