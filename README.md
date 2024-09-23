@@ -43,10 +43,19 @@ Follow these steps to clone and run the project:
 ## Screenshot Program
 Here are some screenshots of the Notes App:
 
-![Login](images/Login.png)
-![Home](images/Home.png)
-![Note](images/Note.png)
-![Delete](images/Delete.png)
-![List](images/List.png)
-![Search](images/Search.png)
-![Profile](images/Profile.png)
+<div>
+   <img src="images/Login.png" alt="Login" height="500" style="text-align: justify;"/>
+   <img src="images/Home.png" alt="Home" height="500" style="text-align: justify;"/>
+</div>
+<div>
+   <img src="images/Note.png" alt="Note" height="500" style="text-align: justify;"/>
+   <img src="images/Delete.png" alt="Delete" height="500" style="text-align: justify;"/>
+</div>
+<div>
+   <img src="images/List.png" alt="List" height="500" style="text-align: justify;"/>
+   <img src="images/Search.png" alt="Search" height="500" style="text-align: justify;"/>
+</div>
+<div>
+   <img src="images/Sort.png" alt="Profile" height="500" style="text-align: justify;"/>
+   <img src="images/Profile.png" alt="Profile" height="500" style="text-align: justify;"/>
+</div>
